@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>House Robber Problem - Dynamic Programming</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 2cm;
+        }
+        
+        body {
+            font-family: 'Times New Roman', serif;
+            line-height: 1.6;
+            max-width: 21cm;
+            margin: 0 auto;
+            padding: 20px;
+            background: white;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+        }
+        
+        h2 {
+            color: #2980b9;
+            margin-top: 25px;
+            margin-bottom: 15px;
+            border-left: 4px solid #3498db;
+            padding-left: 10px;
+        }
+        
+        .section {
+            margin-bottom: 20px;
+        }
+        
+        .problem-box {
+            background: #ecf0f1;
+            border-left: 4px solid #e74c3c;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        
+        .example-box {
+            background: #e8f5e9;
+            border-left: 4px solid #4caf50;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        
+        .formula-box {
+            background: #fff3e0;
+            border: 2px solid #ff9800;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        
+        .complexity-box {
+            background: #f3e5f5;
+            border-left: 4px solid #9c27b0;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        
+        pre {
+            background: #263238;
+            color: #aed581;
+            padding: 20px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+        
+        code {
+            font-family: 'Courier New', monospace;
+            background: #f5f5f5;
+            padding: 2px 6px;
+            border-radius: 3px;
+            color: #e74c3c;
+        }
+        
+        table {
+            border-collapse: collapse;
+            margin: 20px auto;
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        th, td {
+            border: 2px solid #3498db;
+            padding: 12px 20px;
+            text-align: center;
+            font-size: 14px;
+        }
+        
+        th {
+            background: #3498db;
+            color: white;
+            font-weight: bold;
+        }
+        
+        td {
+            background: #ecf0f1;
+        }
+        
+        .true-cell {
+            background: #a5d6a7 !important;
+            font-weight: bold;
+            color: #1b5e20;
+        }
+        
+        .false-cell {
+            background: #ef9a9a !important;
+            color: #b71c1c;
+        }
+        
+        ul {
+            line-height: 1.8;
+        }
+        
+        strong {
+            color: #2c3e50;
+        }
+        
+        .note {
+            font-style: italic;
+            color: #7f8c8d;
+            margin-top: 10px;
+        }
+        
+        @media print {
+            body {
+                background: white;
+            }
+            pre {
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>House Robber Problem - Dynamic Programming<br>Table Approach</h1>
+    
+    <div class="section problem-box">
+        <h2>Problem:</h2>
+        <p>You are a professional robber planning to rob houses along a street. Each house has a certain amount of money stashed. All houses are arranged in a line, and <strong>adjacent houses have security systems connected</strong> — it will automatically alert the police if two adjacent houses are broken into on the same night.</p>
+        <p>Given an integer array <code>nums</code> representing the amount of money in each house, return <strong>the maximum amount of money you can rob tonight without alerting the police</strong>.</p>
+    </div>
+    
+    <div class="section example-box">
+        <h2>Example:</h2>
+        <p><strong>Input:</strong> nums = [2, 7, 9, 3, 1]</p>
+        <p><strong>Output:</strong> 12</p>
+        <p><strong>Explanation:</strong> Rob house 0 (money = 2), house 2 (money = 9), and house 4 (money = 1).<br>
+        Total = 2 + 9 + 1 = 12</p>
+    </div>
+    
+    <div class="section">
+        <h2>Dynamic Programming Idea:</h2>
+        <p>We construct a 1D array <code>dp[i]</code> where each cell represents the <strong>maximum amount of money</strong> that can be robbed up to house <code>i</code>.</p>
+    </div>
+    
+    <div class="section">
+        <h2>Base Case:</h2>
+        <ul>
+            <li><code>dp[0] = nums[0]</code> — If there's only one house, rob it.</li>
+            <li><code>dp[1] = Math.max(nums[0], nums[1])</code> — If there are two houses, rob the one with more money.</li>
+        </ul>
+    </div>
+    
+    <div class="section formula-box">
+        <h2>Transition Formula:</h2>
+        <p>For each house <code>i</code> (where i ≥ 2), we have two choices:</p>
+        <ul>
+            <li><strong>Rob house i:</strong> <code>nums[i] + dp[i-2]</code> (add current house money to max from two houses back)</li>
+            <li><strong>Don't rob house i:</strong> <code>dp[i-1]</code> (take the max from the previous house)</li>
+        </ul>
+        <p style="text-align: center; font-size: 18px; margin-top: 15px;">
+            <strong>dp[i] = Math.max(dp[i-1], nums[i] + dp[i-2])</strong>
+        </p>
+        <p class="note">This means at each step we decide whether to rob the current house or skip it.</p>
+    </div>
+    
+    <div class="section complexity-box">
+        <h2>Complexity Analysis:</h2>
+        <p><strong>Time Complexity:</strong> O(n)<br>
+        We iterate through the array once.</p>
+        <p><strong>Space Complexity:</strong> O(n)<br>
+        We store an array of size n for the DP table.</p>
+    </div>
+    
+    <div class="section">
+        <h2>Example Table:</h2>
+        <p>For nums = [2, 7, 9, 3, 1]</p>
+        <table>
+            <tr>
+                <th>House (i)</th>
+                <th>0</th>
+                <th>1</th>
+                <th>2</th>
+                <th>3</th>
+                <th>4</th>
+            </tr>
+            <tr>
+                <td><strong>Money</strong></td>
+                <td>2</td>
+                <td>7</td>
+                <td>9</td>
+                <td>3</td>
+                <td>1</td>
+            </tr>
+            <tr>
+                <td><strong>dp[i]</strong></td>
+                <td class="true-cell">2</td>
+                <td class="true-cell">7</td>
+                <td class="true-cell">11</td>
+                <td class="true-cell">11</td>
+                <td class="true-cell">12</td>
+            </tr>
+        </table>
+    </div>
+    
+    <div class="section">
+        <h2>Java Implementation:</h2>
+        <pre>
+public class HouseRobber {
+    
+    public static int rob(int[] nums) {
+        int n = nums.length;
+        
+        // Граничные случаи
+        if (n == 0) return 0;
+        if (n == 1) return nums[0];
+        
+        // Создаем DP таблицу
+        int[] dp = new int[n];
+        
+        // Базовые случаи
+        dp[0] = nums[0];
+        dp[1] = Math.max(nums[0], nums[1]);
+        
+        // Заполняем таблицу
+        for (int i = 2; i < n; i++) {
+            // Максимум из: не грабить текущий дом ИЛИ грабить текущий + максимум от i-2
+            dp[i] = Math.max(dp[i - 1], nums[i] + dp[i - 2]);
+        }
+        
+        return dp[n - 1];
+    }
+    
+    // Метод для печати таблицы DP
+    public static void printDPTable(int[] nums, int[] dp) {
+        int n = nums.length;
+        
+        System.out.println("\n" + "=".repeat(60));
+        System.out.println("DP Table Visualization");
+        System.out.println("=".repeat(60));
+        
+        // Печать заголовков
+        System.out.print("House (i):    ");
+        for (int i = 0; i < n; i++) {
+            System.out.printf("%5d ", i);
+        }
+        System.out.println("\n" + "-".repeat(60));
+        
+        // Печать значений домов
+        System.out.print("Money:        ");
+        for (int i = 0; i < n; i++) {
+            System.out.printf("%5d ", nums[i]);
+        }
+        System.out.println();
+        
+        // Печать DP значений
+        System.out.print("dp[i]:        ");
+        for (int i = 0; i < n; i++) {
+            System.out.printf("%5d ", dp[i]);
+        }
+        System.out.println("\n" + "=".repeat(60));
+    }
+    
+    public static void main(String[] args) {
+        // Пример 1
+        int[] nums1 = {2, 7, 9, 3, 1};
+        System.out.println("Example 1:");
+        System.out.println("Houses: " + java.util.Arrays.toString(nums1));
+        
+        // Получаем DP таблицу для визуализации
+        int n = nums1.length;
+        int[] dp = new int[n];
+        dp[0] = nums1[0];
+        dp[1] = Math.max(nums1[0], nums1[1]);
+        for (int i = 2; i < n; i++) {
+            dp[i] = Math.max(dp[i - 1], nums1[i] + dp[i - 2]);
+        }
+        
+        printDPTable(nums1, dp);
+        int result1 = rob(nums1);
+        System.out.println("Maximum money that can be robbed: " + result1);
+        
+        // Пример 2
+        System.out.println("\n\nExample 2:");
+        int[] nums2 = {1, 2, 3, 1};
+        System.out.println("Houses: " + java.util.Arrays.toString(nums2));
+        
+        int[] dp2 = new int[nums2.length];
+        dp2[0] = nums2[0];
+        dp2[1] = Math.max(nums2[0], nums2[1]);
+        for (int i = 2; i < nums2.length; i++) {
+            dp2[i] = Math.max(dp2[i - 1], nums2[i] + dp2[i - 2]);
+        }
+        
+        printDPTable(nums2, dp2);
+        int result2 = rob(nums2);
+        System.out.println("Maximum money that can be robbed: " + result2);
+        
+        // Пример 3
+        System.out.println("\n\nExample 3:");
+        int[] nums3 = {5, 3, 4, 11, 2};
+        System.out.println("Houses: " + java.util.Arrays.toString(nums3));
+        
+        int[] dp3 = new int[nums3.length];
+        dp3[0] = nums3[0];
+        dp3[1] = Math.max(nums3[0], nums3[1]);
+        for (int i = 2; i < nums3.length; i++) {
+            dp3[i] = Math.max(dp3[i - 1], nums3[i] + dp3[i - 2]);
+        }
+        
+        printDPTable(nums3, dp3);
+        int result3 = rob(nums3);
+        System.out.println("Maximum money that can be robbed: " + result3);
+    }
+}
+</pre>
+    </div>
+    
+    <div class="section">
+        <h2>Output Example:</h2>
+        <pre style="background: #f5f5f5; color: #333;">
+Example 1:
+Houses: [2, 7, 9, 3, 1]
+============================================================
+DP Table Visualization
+============================================================
+House (i):        0     1     2     3     4 
+------------------------------------------------------------
+Money:            2     7     9     3     1 
+dp[i]:            2     7    11    11    12 
+============================================================
+Maximum money that can be robbed: 12
+
+
+Example 2:
+Houses: [1, 2, 3, 1]
+============================================================
+DP Table Visualization
+============================================================
+House (i):        0     1     2     3 
+------------------------------------------------------------
+Money:            1     2     3     1 
+dp[i]:            1     2     4     4 
+============================================================
+Maximum money that can be robbed: 4
+</pre>
+    </div>
+    
+    <div style="text-align: center; margin-top: 40px; padding-top: 20px; border-top: 2px solid #3498db;">
+        <p style="color: #7f8c8d; font-size: 12px;">· Asankanov Erbol 🐦‍⬛ ·</p>
+    </div>
+</body>
+</html>
