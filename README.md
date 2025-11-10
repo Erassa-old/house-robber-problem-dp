@@ -4,7 +4,7 @@
 
 ## 🌐 View Online
 
-**[Open Document](https://erassa-old.github.io/house-robber-dp/)**
+**[Open Document](https://erassa-old.github.io/house-robber-problem-dp/)**
 
 ## 📖 Contents
 
